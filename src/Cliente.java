@@ -1,7 +1,6 @@
 import java.util.Date;
 
 public abstract class Cliente implements ITaxas {
-
     private String nome;
     private String endereco;
     private Date data;

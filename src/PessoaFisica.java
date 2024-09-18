@@ -12,6 +12,7 @@ public class PessoaFisica extends Cliente {
         this.sexo = sexo;
     }
 
+
     @Override
     public String toString() {
         String str = "PESSOA FISICA (PF)\n" +

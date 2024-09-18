@@ -1,15 +1,22 @@
-import java.util.Arrays;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.io.*;
+import java.io.IOException;
 
-public abstract class Conta {
+public abstract class Conta implements Serializable{
     private Cliente donoConta;
+    private int numAgencia = 1;
+
 
     protected double saldo = 15000;
     public static int totalContas = 0;
     protected int contador = 0;
     protected double limiteMAX, limiteMIN;
-    protected int num;
+    private int num;
     private ArrayList<Operacao> operacoes;
     private int nextOp; //proxima Operacao
 
@@ -116,6 +123,28 @@ public abstract class Conta {
         System.out.printf("Total: %.2f\n", taxa);
     }
 
+    public void serializar() throws IOException{
+        FileOutputStream fileOut = new FileOutputStream(this.getNumAgencia() + "-" + this.getNum() + ".ser");
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+        out.writeObject(this);
+
+        out.close();
+        fileOut.close();
+    }
+
+    public Conta deserializar(int numAgencia, int numero) throws IOException, ClassNotFoundException {
+        FileInputStream fileIn = new FileInputStream(numAgencia + "-" + numero + ".ser");
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+
+        Conta c = (Conta) in.readObject();
+
+        in.close();
+        fileIn.close();
+
+        return c;
+    }
+
 
     //getters
     public double getSaldo() {
@@ -142,4 +171,20 @@ public abstract class Conta {
     abstract void setLimite(double limiteMIN, double limiteMAX);
 
     public abstract double calculaTaxas();
+
+    public int getNumAgencia() {
+        return numAgencia;
+    }
+
+    public void setNumAgencia(int numAgencia) {
+        this.numAgencia = numAgencia;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
 }

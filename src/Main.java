@@ -1,4 +1,6 @@
 import java.util.Date;
+import java.io.IOException;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -49,9 +51,8 @@ public class Main {
         contaPJ.extrato(1);
 
         System.out.println("\nA media e:");
-        //int media = Operacao.totalOperacoes/Conta.totalContas;
-
-        //System.out.println("Media: " +media);
+        int media = Operacao.totalOperacoes/Conta.totalContas;
+        System.out.println(+media);
 
         //verificacao pelo metodo equals
         System.out.println("\nVERIFICANDO SE HA CONTAS IGUAIS (cpf ou cnpj)");
@@ -59,5 +60,22 @@ public class Main {
         System.out.println(pF1.autenticar(pF2.getCpf()));
         System.out.println("\nConta " + pF1.getNome() + " equals (igual) Conta " + pF3.getNome() + "? ");
         System.out.println(pF1.autenticar(pF3.getCpf()));
+
+
+        //Serializa cc
+        try {
+            contaPF1.serializar();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        //Carrega cc em uma nova conta
+        try {
+            Conta nova;
+            nova = contaPF1.deserializar(contaPF1.getNumAgencia(), contaPF1.getNumAgencia());
+            nova.extrato(1);
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
