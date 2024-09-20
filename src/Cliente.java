@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.Date;
 
-public abstract class Cliente implements ITaxas {
+public abstract class Cliente implements ITaxas, Serializable {
     private String nome;
     private String endereco;
     private Date data;

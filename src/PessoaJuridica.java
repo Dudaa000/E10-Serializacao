@@ -13,7 +13,6 @@ public class PessoaJuridica extends Cliente {
         this.numFuncionarios = numFuncionarios;
     }
 
-
     @Override
     public String toString() {
         String str = "PESSOA JURIDICA (PJ) \n" +

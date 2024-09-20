@@ -7,3 +7,4 @@ public class SemLimiteException extends Exception{
         super(mensagem);
     }
 }
+

@@ -1,19 +1,16 @@
-
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.*;
-import java.io.IOException;
 
-public abstract class Conta implements Serializable{
+public abstract class Conta implements ITaxas, Serializable{
     private Cliente donoConta;
-    private int numAgencia = 1;
+    private int agencia;
+    final private static long serialVertionUID = 1L;
+
 
 
     protected double saldo = 15000;
-    public static int totalContas = 0;
+    public static transient int totalContas = 0;
     protected int contador = 0;
     protected double limiteMAX, limiteMIN;
     private int num;
@@ -24,7 +21,7 @@ public abstract class Conta implements Serializable{
         this.num = num;
         this.saldo = saldo;
         this.donoConta = donoConta;
-
+        this.agencia = agencia;
         this.operacoes = new ArrayList<Operacao>();
         this.nextOp = 0;
         setLimite(limiteMIN, limiteMAX);
@@ -123,26 +120,82 @@ public abstract class Conta implements Serializable{
         System.out.printf("Total: %.2f\n", taxa);
     }
 
-    public void serializar() throws IOException{
-        FileOutputStream fileOut = new FileOutputStream(this.getNumAgencia() + "-" + this.getNum() + ".ser");
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
-        out.writeObject(this);
+    public void salvarEmArquivo() {
+        String nomeArquivo = this.agencia + "-" + this.num + ".ser";
 
-        out.close();
-        fileOut.close();
+        FileOutputStream fileOut = null;
+        ObjectOutputStream out = null;
+
+        try {
+            fileOut = new FileOutputStream(nomeArquivo);
+            out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+
+            System.out.println("Conta serializada com sucesso");
+
+        } catch (IOException e) {
+            System.err.println("Erro ao serializar a conta");
+            System.err.println(e.getMessage());
+
+        } finally {
+            if (out!=null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    System.err.println("Erro ao serializar a conta");
+                    System.err.println(e.getMessage());
+                }
+            }
+            if (fileOut!=null) {
+                try {
+                    fileOut.close();
+                } catch (IOException e) {
+                    System.err.println("Erro ao serializar a conta");
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
     }
 
-    public Conta deserializar(int numAgencia, int numero) throws IOException, ClassNotFoundException {
-        FileInputStream fileIn = new FileInputStream(numAgencia + "-" + numero + ".ser");
-        ObjectInputStream in = new ObjectInputStream(fileIn);
+    public static Conta carregaDados(int agencia, int numero) {
+        String nomeArquivo = agencia + "-" + numero + ".ser";
 
-        Conta c = (Conta) in.readObject();
+        FileInputStream fileIn = null;
+        ObjectInputStream in = null;
 
-        in.close();
-        fileIn.close();
+        try {
+            fileIn = new FileInputStream(nomeArquivo);
+            in = new ObjectInputStream(fileIn);
+            Conta conta = (Conta)in.readObject();
 
-        return c;
+            System.out.println("Conta desserializada com sucesso");
+
+            return conta;
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Erro ao desserializar a conta");
+            System.err.println(e.getMessage());
+
+        } finally {
+            if (in!=null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    System.err.println("Erro ao desserializar a conta");
+                    System.err.println(e.getMessage());
+                }
+            }
+            if (fileIn!=null) {
+                try {
+                    fileIn.close();
+                } catch (IOException e) {
+                    System.err.println("Erro ao desserializar a conta");
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+        return null;
     }
 
 
@@ -172,12 +225,12 @@ public abstract class Conta implements Serializable{
 
     public abstract double calculaTaxas();
 
-    public int getNumAgencia() {
-        return numAgencia;
+    public int getAgencia() {
+        return agencia;
     }
 
-    public void setNumAgencia(int numAgencia) {
-        this.numAgencia = numAgencia;
+    public void setAgencia(int numAgencia) {
+        this.agencia = agencia;
     }
 
     public int getNum() {

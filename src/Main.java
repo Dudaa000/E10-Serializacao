@@ -62,20 +62,8 @@ public class Main {
         System.out.println(pF1.autenticar(pF3.getCpf()));
 
 
-        //Serializa cc
-        try {
-            contaPF1.serializar();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        contaPF1.salvarEmArquivo();
 
-        //Carrega cc em uma nova conta
-        try {
-            Conta nova;
-            nova = contaPF1.deserializar(contaPF1.getNumAgencia(), contaPF1.getNumAgencia());
-            nova.extrato(1);
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
+        Conta contaCarregada = Conta.carregaDados(contaPF1.getAgencia(), contaPF1.getNum());
     }
 }

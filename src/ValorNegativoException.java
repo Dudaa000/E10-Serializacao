@@ -7,3 +7,4 @@ public class ValorNegativoException extends Exception{
         super(mensagem);
     }
 }
+
